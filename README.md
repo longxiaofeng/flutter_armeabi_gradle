@@ -6,7 +6,7 @@ FlutterSdk 1.9.6 老版本在so在sdk bin/cache/artifacts/engine 中
 方案1 ：https://github.com/lizhangqu/plugin-flutter-armeabi
 
 方案2：美团方案
-
+```javascript
 for arch in android-arm android-arm-profile android-arm-release ; do
     pushd $arch
     cp flutter.jar flutter-armeabi-v7a.jar #备份
@@ -16,15 +16,15 @@ for arch in android-arm android-arm-profile android-arm-release ; do
     zip flutter.jar lib/armeabi/libflutter.so
     popd
 done
+```
 复制代码
 FlutterSdk 2.0.3 新版本为远程依赖 mirrors.sjtug.sjtu.edu.cn/download.fl… 上面的方案1与方案2已经不太适用
 
 新方案修改打包流程，在打包流程中完成so的拷贝逻辑，可以减少FlutterSdk重大修改造成脚本不适用
 
 新建flutter_arm.gradle文件
-
+```javascript
 project.setProperty('target-platform', 'android-arm')
-
 project.afterEvaluate {
     android.applicationVariants.all { variant ->
 
@@ -66,9 +66,12 @@ def createcopyFlutterSoTask(variant) {
         }
     }
 }
+```
+
 
 复制代码
 在MergeJniLibs后，将armeabi-v7a的libflutter.so复制到armeabi中
-
+```javascript
 apply from: "flutter_arm.gradle"  // 必须放在flutter.gradle引用之前 要不然读取不到target-platform的值
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+```
